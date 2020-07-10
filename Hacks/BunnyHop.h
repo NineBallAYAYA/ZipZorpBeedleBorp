@@ -9,10 +9,9 @@
 class BunnyHop {
 public:
     BunnyHop(Memory* memory);
-    void jump();
     void check();
-
 private:
+    void jump();
     Memory* memory;
 };
 
