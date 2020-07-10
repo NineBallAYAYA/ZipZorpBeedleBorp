@@ -3,29 +3,22 @@
 //
 
 #include "Memory.h"
+#include "../misc/Misc.h"
 #include <regex>
-
-//Probably a more efficent way to do this but whatever....
-std::string GetStdoutFromCommand(std::string cmd) {
-    std::string data;
-    FILE * stream;
-    const int max_buffer = 256;
-    char buffer[max_buffer];
-    cmd.append(" 2>&1");
-    stream = popen(cmd.c_str(), "r");
-    if (stream) {
-        while (!feof(stream))
-            if (fgets(buffer, max_buffer, stream) != NULL) data.append(buffer);
-        pclose(stream);
-    }
-    return data;
-}
+#include <iostream>
+#include <sys/uio.h>
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <string.h>
+#include <sys/uio.h>
+#include <stdlib.h>
 
 //Fairly straightforward
 void Memory::getPid(const std::string& procName) {
     std::string cmd = "pidof -s " + procName;
     std::string pidStr = GetStdoutFromCommand(cmd);
-    pid = std::stoi(pidStr);
+    pid = std::stoul(pidStr);
 }
 
 void Memory::getClientModule() {
@@ -73,12 +66,19 @@ int Memory::write(void* remoteAddr, void* localAddr, size_t size) {
 }
 
 void Memory::RefreshAddr() {
+//------------------------------------------------//
     base_player_addr =  clientAddr.first  +  base_player_offset;
     force_jump_addr  =  clientAddr.first  +  force_jump_offset;
+    dwInCrossID_addr =  clientAddr.first  + dwInCrossID_offset;
+//------------------------------------------------//
     std::vector<addr_type> offsets(2);
     offsets[0] = base_player_addr;
     offsets[1] = flags_offset;
     flags_addr = multiLevelPointer(offsets, 8);
+//------------------------------------------------//
+    dwGlowObjectManager_addr = clientAddr.first + dwGlowObjectManager_offset;
+    dwEntityList_addr = clientAddr.first + dwEntityList_offset;
+//------------------------------------------------//
 }
 
 addr_type Memory::multiLevelPointer(std::vector<addr_type> offsets, size_t size) {
@@ -86,7 +86,18 @@ addr_type Memory::multiLevelPointer(std::vector<addr_type> offsets, size_t size)
     addr_type CurrentOffset = 0;
     for (int i = 0; i < offsets.size(); i++){
         CurrentOffset = offsets[i] + NextOffset;
-        read((void*) CurrentOffset, &NextOffset, sizeof(CurrentOffset));
+        read((void*) CurrentOffset, &NextOffset, size);
     }
+    return CurrentOffset;
+}
+addr_type Memory::multiLevelPointer(addr_type offset1, addr_type offset2, size_t size) {
+    addr_type NextOffset = 0;
+    addr_type CurrentOffset = 0;
+
+    CurrentOffset = offset1 + NextOffset;
+    read((void*) CurrentOffset, &NextOffset, size);
+    ///ooga booga
+    CurrentOffset = offset2 + NextOffset;
+    read((void*) CurrentOffset, &NextOffset, size);
     return CurrentOffset;
 }

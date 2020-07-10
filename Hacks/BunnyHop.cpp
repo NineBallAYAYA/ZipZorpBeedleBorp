@@ -4,14 +4,16 @@
 
 #include "BunnyHop.h"
 #include <unistd.h>
+#include "iostream"
 
 BunnyHop::BunnyHop(Memory* memoryptr) {
     memory = memoryptr;
 }
 
-void BunnyHop::jump() {
-    unsigned int jump = 5;
+int debug = 1;
 
+void BunnyHop::jump() {
+    int jump = 5;
     memory->write((void*) (memory->force_jump_addr), &jump, sizeof(int));
     usleep(2000);
     jump = 4;

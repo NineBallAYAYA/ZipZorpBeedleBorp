@@ -13,5 +13,4 @@ typedef std::pair<unsigned long int, unsigned long int> addr_Range;
 
 
 
-
-#endif MULTIHACK_TYPEDEF_H
+#endif //MULTIHACK_TYPEDEF_H
