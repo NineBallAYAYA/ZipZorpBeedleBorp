@@ -78,11 +78,9 @@ void Keybinds::read_input() {
 
         if (holdingKey[bhopkey] == 1) {
             bunnyhop->check();
-            std::cout << "jump!\n";
         }
         if (holdingKey[triggerkey] == 1) {
             trigger->check();
-            std::cout << "shoot!\n";
         }
 
 
