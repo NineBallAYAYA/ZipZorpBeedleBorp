@@ -18,6 +18,7 @@
 void Memory::getPid(const std::string& procName) {
     std::string cmd = "pidof -s " + procName;
     std::string pidStr = GetStdoutFromCommand(cmd);
+    if (pidStr == "") return;
     pid = std::stoul(pidStr);
 }
 
@@ -67,14 +68,14 @@ int Memory::write(void* remoteAddr, void* localAddr, size_t size) {
 
 void Memory::RefreshAddr() {
 //------------------------------------------------//
-    base_player_addr =  clientAddr.first  +  base_player_offset;
+    read((void*) (clientAddr.first + base_player_offset), &base_player_addr, sizeof(base_player_addr));
     force_jump_addr  =  clientAddr.first  +  force_jump_offset;
-    dwInCrossID_addr =  clientAddr.first  + dwInCrossID_offset;
+    ForceAttack_addr = clientAddr.first + ForceAttack_offset;
+    InCrossID_addr = base_player_addr + InCrossID_offset;
+    std::cout << "CrossID: " << InCrossID_addr << std::endl;
 //------------------------------------------------//
     std::vector<addr_type> offsets(2);
-    offsets[0] = base_player_addr;
-    offsets[1] = flags_offset;
-    flags_addr = multiLevelPointer(offsets, 8);
+    flags_addr = base_player_addr + flags_offset;
 //------------------------------------------------//
     dwGlowObjectManager_addr = clientAddr.first + dwGlowObjectManager_offset;
     dwEntityList_addr = clientAddr.first + dwEntityList_offset;

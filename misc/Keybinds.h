@@ -8,28 +8,30 @@
 #include "../Memory/Memory.h"
 #include <linux/input.h>
 #include "../Hacks/BunnyHop.h"
+#include "../Hacks/Trigger.h"
 #include <unistd.h>
+#include "map"
 
 class Keybinds {
 public:
-    Keybinds(BunnyHop* bunnyHop);
-void open_keyboard();
-void open_mouse();
-void sendMouse();
-void readMouse();
-void read_input();
-void start_logging();
-//--------------------------//
-///polling vars
-int shouldHop = 0;
-int bhopkey = KEY_SPACE;
-BunnyHop* bunnyhop;
-//--------------------------//
+    Keybinds(BunnyHop* bunnyHop, Trigger* trigger);
+    void init();
+//Class Pointers
 private:
-    int fdK;
-    int fdM;
-    struct input_event ie;
-    struct input_event ieM;
+    BunnyHop* bunnyhop;
+    Trigger* trigger;
+//KEYS
+private:
+    int bhopkey = KEY_SPACE;
+    int triggerkey = KEY_C;
+//FUNCTIONS
+private:
+    void read_input();
+//VARIABLES
+private:
+    std::vector<int> deviceList;
+    std::map<int, int> deviceFD;
+    int InputDeviceID = NULL;
 };
 
 

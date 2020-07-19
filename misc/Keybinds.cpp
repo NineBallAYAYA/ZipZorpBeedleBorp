@@ -12,71 +12,85 @@
 #include "iostream"
 #include "boost/thread.hpp"
 #include "map"
+#include "Misc.h"
+#include "regex"
 
-void Keybinds::open_keyboard() {
-    fdK = open("/dev/input/event16", O_RDONLY | O_NONBLOCK);
-    if (fdK == -1) {
-        printf("Need to run as root!\n");
-        exit(1);
+//Device id, File Descriptor
+void Keybinds::init() {
+
+    std::string s = GetStdoutFromCommand("ls /dev/input/");
+    std::regex e("event(\\d+)");
+    std::smatch m;
+    while (std::regex_search(s, m, e)) {
+        std::string a = m[1].str();
+        deviceList.push_back(stoi(a));
+        s = m.suffix().str();
     }
-}
-
-void Keybinds::open_mouse() {
-    fdM = open("/dev/input/event4", O_RDONLY | O_NONBLOCK);
-    if (fdM == -1) {
-        printf("Need to run as root!\n");
-        exit(1);
+    for (int i = 0; i < deviceList.size(); i++) {
+        std::string deviceFile = "/dev/input/event" + std::to_string(deviceList[i]);
+        int fd = open(deviceFile.c_str(), O_RDONLY | O_NONBLOCK);
+        if (fd == -1) {
+            fprintf(stderr, "Need to run as root!");
+            exit(1);
+        }
+        deviceFD[deviceList[i]] = fd;
     }
+    read_input();
 }
 
-Keybinds::Keybinds(BunnyHop *bunnyHop_) {
-    bunnyhop = bunnyHop_;
-}
 
 void Keybinds::read_input() {
-    std::map<unsigned int, bool> holdingKey;
 
+    while (InputDeviceID == NULL) {
+        for (int i = 0; i < deviceList.size(); i++) {
+            struct input_event ie;
+            int bytes = read(deviceFD[deviceList[i]], &ie, sizeof(ie));
+            if (bytes > 0 && ie.type == EV_KEY && ie.value == 1 && (ie.code == bhopkey || ie.code == triggerkey)) {
+                std::cout << "Input Device Found! id:" << i << std::endl;
+                InputDeviceID = i;
+                std::cout << "BHop Key: " << bhopkey << std::endl;
+                std::cout << "Trigger Key: " << triggerkey << std::endl;
+            }
+        }
+    }
+    std::map<unsigned int, bool> holdingKey;
     while (true) {
-        usleep(50);
+        usleep(100);
         struct input_event ie;
-        int bytes = read(fdK, &ie, sizeof(ie));
+        int bytes = read(deviceFD[deviceList[InputDeviceID]], &ie, sizeof(ie));
         if (bytes > 0 && ie.type == EV_KEY && ie.value == 1) {
             if (ie.code == bhopkey) {
                 holdingKey[bhopkey] = 1;
                 bunnyhop->check();
             }
+            if (ie.code == triggerkey) {
+                holdingKey[triggerkey] = 1;
+                trigger->check();
+            }
         } else if (bytes > 0 && ie.type == EV_KEY && ie.value == 0) {
             if (ie.code == bhopkey) {
                 holdingKey[bhopkey] = 0;
-                std::cout << holdingKey[bhopkey];
             }
-        } else if (holdingKey[bhopkey] == 1) {
+            if (ie.code == triggerkey) {
+                holdingKey[triggerkey] = 0;
+            }
+        }
+
+        if (holdingKey[bhopkey] == 1) {
             bunnyhop->check();
+            std::cout << "jump!\n";
         }
+        if (holdingKey[triggerkey] == 1) {
+            trigger->check();
+            std::cout << "shoot!\n";
+        }
+
 
     }
 }
 
-void Keybinds::start_logging() {
-    boost::thread t(&Keybinds::read_input, this);
-}
 
-void Keybinds::readMouse() {
-    int bytes = read(fdK, &ie, sizeof(ie));
-    if (bytes > 0 && ie.type == EV_KEY) {
-        if(ie.value == 1){
-            std::cout << "Pressed: " << ie.code << std::endl;
-
-        } else{
-            std::cout << "let go: " << ie.code << std::endl;
-        }
-    }
-
-}
-void Keybinds::sendMouse() {
-    struct input_event ie;
-  //  ie.type = EV_KEY;
-  //  ie.code = KEY
-   // write(fdM, &ie, sizeof(ie));
-
+Keybinds::Keybinds(BunnyHop *bunnyHop_, Trigger *trigger_) {
+    bunnyhop = bunnyHop_;
+    trigger = trigger_;
 }

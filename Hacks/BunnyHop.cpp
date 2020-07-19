@@ -10,8 +10,6 @@ BunnyHop::BunnyHop(Memory* memoryptr) {
     memory = memoryptr;
 }
 
-int debug = 1;
-
 void BunnyHop::jump() {
     int jump = 5;
     memory->write((void*) (memory->force_jump_addr), &jump, sizeof(int));
@@ -19,7 +17,6 @@ void BunnyHop::jump() {
     jump = 4;
     memory->write((void*) (memory->force_jump_addr), &jump, sizeof(int));
 }
-
 
 void BunnyHop::check() {
     int flags = 0;

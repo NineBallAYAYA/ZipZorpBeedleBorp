@@ -8,9 +8,8 @@
 std::string GetStdoutFromCommand(std::string cmd) {
     std::string data;
     FILE * stream;
-    const int max_buffer = 256;
+    const int max_buffer = 8000;
     char buffer[max_buffer];
-    cmd.append(" 2>&1");
     stream = popen(cmd.c_str(), "r");
     if (stream) {
         while (!feof(stream))
