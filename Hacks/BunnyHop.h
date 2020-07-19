@@ -10,9 +10,18 @@ class BunnyHop {
 public:
     BunnyHop(Memory* memory);
     void check();
+
+//FUNCTIONS
 private:
     void jump();
+
+//CLASS PTR's
+private:
     Memory* memory;
+
+//User Vars
+public:
+    int bhopDelay = 1000;
 };
 
 

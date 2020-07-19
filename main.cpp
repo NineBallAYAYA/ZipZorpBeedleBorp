@@ -27,36 +27,13 @@ int main() {
     memory.RefreshAddr();
 //------------------------------------------------------------------------------------//
   BunnyHop   bunnyHop(&memory);
-  Keybinds   keyBinds(&bunnyHop);
-  //Esp        esp(&memory);
   Trigger    trigger(&memory);
+  Keybinds   keyBinds(&bunnyHop, &trigger);
+  //Esp        esp(&memory);
+    keyBinds.init();
 
-  keyBinds.open_keyboard();
-  keyBinds.open_mouse();
-  keyBinds.start_logging();
 
- // esp.cycleEntitys();
-  // boost::function<void(unsigned int)> bhopFunc = boost::bind(&BunnyHop::check, &bunnyHop, _1);
-  // keyBinds.bind("I", bhopFunc);
-  // keyBinds.startListen();
-    while(true){
-        trigger.check();
-        usleep(10*1000);
-    //    keyBinds.readMouse();
-    };
-  //while(Process is open){
-  //    if(BunnyHopToggleON){
-  //        BunnyHop.check();
-  //    }
-  //
-  //    if(AimToggleON){
-  //        Aim.AimUpdate();
-  //    }
-  //
-  //    if(AntiFlashOn){
-  //        AFlash.update();
-  //    }
-  //
-  //    usleep(100);
-  //}
+  while(true){
+      usleep(1000000);
+  }
 }
