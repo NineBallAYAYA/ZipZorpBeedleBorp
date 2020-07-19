@@ -74,8 +74,8 @@ void Memory::RefreshAddr() {
     InCrossID_addr = base_player_addr + InCrossID_offset;
     std::cout << "CrossID: " << InCrossID_addr << std::endl;
 //------------------------------------------------//
-    std::vector<addr_type> offsets(2);
     flags_addr = base_player_addr + flags_offset;
+
 //------------------------------------------------//
     dwGlowObjectManager_addr = clientAddr.first + dwGlowObjectManager_offset;
     dwEntityList_addr = clientAddr.first + dwEntityList_offset;
@@ -91,14 +91,15 @@ addr_type Memory::multiLevelPointer(std::vector<addr_type> offsets, size_t size)
     }
     return CurrentOffset;
 }
-addr_type Memory::multiLevelPointer(addr_type offset1, addr_type offset2, size_t size) {
-    addr_type NextOffset = 0;
-    addr_type CurrentOffset = 0;
+addr_type Memory::readEntity(addr_type EntAddress, addr_type ValueOffset, size_t size) {
+    addr_type entity = 0;
+    int value = 0;
 
-    CurrentOffset = offset1 + NextOffset;
-    read((void*) CurrentOffset, &NextOffset, size);
-    ///ooga booga
-    CurrentOffset = offset2 + NextOffset;
-    read((void*) CurrentOffset, &NextOffset, size);
-    return CurrentOffset;
+    ///Ex: read entity ptr from list
+    read((void*) EntAddress, &entity, sizeof(addr_type));
+    ///Add offset to result Ex: +0x138 for health
+    ///Read value at offset Ex: Health
+    read((void*) (entity + ValueOffset), &value, size);
+    ///Voila!
+    return value;
 }

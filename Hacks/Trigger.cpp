@@ -12,12 +12,12 @@ Trigger::Trigger(Memory *memory_) {
 }
 
 void Trigger::shoot() {
-     std::cout << std::hex << memory->ForceAttack_addr << "shoot! \n";
-     int cool = 5;
-     memory->write((void*) memory->ForceAttack_addr, &cool, sizeof(cool));
-     usleep(200);
-     cool = 4;
-     memory->write((void*) memory->ForceAttack_addr, &cool, sizeof(cool));
+    //std::cout << "shoot!\n";
+    int cool = 5;
+    memory->write((void*) memory->ForceAttack_addr, &cool, sizeof(cool));
+    usleep(200);
+    cool = 4;
+    memory->write((void*) memory->ForceAttack_addr, &cool, sizeof(cool));
 }
 
 void Trigger::check() {
@@ -26,9 +26,10 @@ void Trigger::check() {
         if(crossID == 0){
             return;
         }
-        long int crossTarget;
-        memory->read((void*) (memory->dwEntityList_addr + (crossID * 0x20)), &crossTarget, sizeof(crossTarget));
-        int crossHealth;
-        memory->read((void*) (crossTarget + 0x138), &crossHealth, sizeof(crossHealth));
+        int crossTeam = memory->readEntity(memory->dwEntityList_addr + (crossID * 0x20), memory->m_iTeamNum_offset, sizeof(int));
+        int myteam;
+        memory->read((void*) (memory->base_player_addr + memory->m_iTeamNum_offset), &myteam, sizeof(myteam));
+        //std::cout << "Myteam: " << myteam << " CrossTeam: " << crossTeam<< std::endl;
+        if (myteam != crossTeam && crossTeam != 0)
         shoot();
 }
