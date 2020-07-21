@@ -9,8 +9,6 @@
 
 Esp::Esp(Memory *memory_) {
     memory = memory_;
-}
-void Esp::init() {
     ESP = boost::thread(&Esp::cycleEntitys, this);
 }
 

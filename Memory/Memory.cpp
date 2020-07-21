@@ -13,6 +13,7 @@
 #include <string.h>
 #include <sys/uio.h>
 #include <stdlib.h>
+#include <zconf.h>
 
 //Fairly straightforward
 void Memory::getPid(const std::string& procName) {
@@ -66,7 +67,7 @@ int Memory::write(void* remoteAddr, void* localAddr, size_t size) {
     return process_vm_writev(pid, &local_mem, 1, &remote_mem, 1, 0);
 }
 
-void Memory::RefreshAddr() {
+void Memory::setAddr() {
 //------------------------------------------------//
 //Signature
     read((void*) (clientAddr.first + base_player_offset), &base_player_addr, sizeof(base_player_addr));
@@ -100,4 +101,23 @@ addr_type Memory::readEntity(addr_type EntAddress, addr_type ValueOffset, size_t
     read((void*) (entity + ValueOffset), &value, size);
     ///Voila!
     return value;
+}
+
+void Memory::refreshAddr() {
+    read((void*) (clientAddr.first + base_player_offset), &base_player_addr, sizeof(base_player_addr));
+    //Netvars
+    flags_addr = base_player_addr + flags_offset;
+    InCrossID_addr = base_player_addr + InCrossID_offset;
+}
+void Memory::checkIfValid() {
+    addr_type currentValue;
+
+    while (true){
+        sleep(2);
+        read((void*)(clientAddr.first + base_player_offset), &currentValue, sizeof(currentValue));
+        if (currentValue != 0 && currentValue != base_player_addr){
+            refreshAddr();
+            std::cout << "Refreshed addresses! \n";
+        }
+    }
 }

@@ -8,6 +8,8 @@
 #include "iostream"
 #include "map"
 
+boost::thread CheckIfAddrValid;
+
 int main() {
 //------------------------------------------------------------------------------------//
 //Spawn Memory as it is very core...
@@ -24,13 +26,13 @@ int main() {
         usleep(100);
     }
     std::cout << "Found Client Module At: " << memory.clientAddr.first << std::endl;
-    memory.RefreshAddr();
+    memory.setAddr();
 //------------------------------------------------------------------------------------//
   BunnyHop   bunnyHop(&memory);
   Trigger    trigger(&memory);
   Esp        esp(&memory);
-  esp.init();
   Keybinds   keyBinds(&bunnyHop, &trigger, &esp);
 
+  CheckIfAddrValid = boost::thread(&Memory::checkIfValid, &memory);
   keyBinds.init();
 }

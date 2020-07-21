@@ -12,11 +12,13 @@ class Memory {
 public:
     void getPid(const std::string&);
     void getClientModule();
-    void RefreshAddr();
+    void setAddr();
+    void refreshAddr();
     int read(void* targetAddress, void* saveLocation, size_t size);
     int write(void* targetAddress, void* saveLocation, size_t size);
     addr_type multiLevelPointer(std::vector<addr_type> offsets, size_t size);
     addr_type readEntity(addr_type EntAddress, addr_type ValueOffset, size_t size);
+    void checkIfValid();
 public:
 //-----------------------------------------------//
     pid_t pid = 0;
