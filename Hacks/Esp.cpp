@@ -35,7 +35,7 @@ void Esp::cycleEntitys() {
                         float g = health / 100.0;
                         setColour(index, r, g, 0, 1.0, true, false);
                     } else if (team == myteam) {
-                        setColour(index, 0, 0, 1.0, 1.0, true, false);
+                        setColour(index, 1.0f, 0, 1.0, 1.0, true, false);
                     }
                 }
 
@@ -50,7 +50,6 @@ void Esp::setColour(int index, float r, float g, float b, float a, bool Occluded
     memory->write((void *) (memory->dwGlowObjectManager_addr + index + 0x10), &b, sizeof(b));//B
     memory->write((void *) (memory->dwGlowObjectManager_addr + index + 0x14), &a, sizeof(a));//A
     memory->write((void *) (memory->dwGlowObjectManager_addr + index + 0x28), &Occluded, sizeof(Occluded));//Occluded
-    memory->write((void *) (memory->dwGlowObjectManager_addr + index + 0x29), &UnOccluded,
-                  sizeof(UnOccluded));//UnOccluded
+    memory->write((void *) (memory->dwGlowObjectManager_addr + index + 0x29), &UnOccluded, sizeof(UnOccluded));//UnOccluded
 }
 

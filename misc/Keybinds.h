@@ -26,7 +26,7 @@ private:
 private:
     int bhopkey = KEY_SPACE;
     int triggerkey = KEY_C;
-    int espkey = KEY_Y;
+    int espkey = KEY_LEFTALT;
 //FUNCTIONS
 private:
     void read_input();

@@ -6,7 +6,6 @@
 #include <unistd.h>
 #include <boost/thread.hpp>
 #include "iostream"
-#include "map"
 
 boost::thread CheckIfAddrValid;
 
@@ -22,10 +21,17 @@ int main() {
     }
     std::cout << "Found Process, PID: " << memory.pid << std::endl;
     while(!memory.clientAddr.first) {
-        memory.getClientModule();
+       memory.clientAddr = memory.getModule("client_client.so");
         usleep(100);
     }
     std::cout << "Found Client Module At: " << memory.clientAddr.first << std::endl;
+//------------------------------------------------------------------------------------//
+    while(!memory.engineAddr.first) {
+        memory.engineAddr = memory.getModule("engine_client.so");
+        usleep(100);
+    }
+    std::cout << "Found Engine Module At: " << memory.engineAddr.first << std::endl;
+
     memory.setAddr();
 //------------------------------------------------------------------------------------//
   BunnyHop   bunnyHop(&memory);
@@ -35,4 +41,5 @@ int main() {
 
   CheckIfAddrValid = boost::thread(&Memory::checkIfValid, &memory);
   keyBinds.init();
+
 }

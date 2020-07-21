@@ -7,10 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <stdbool.h>
-#include <sys/types.h>
 #include "iostream"
-#include "boost/thread.hpp"
 #include "map"
 #include "Misc.h"
 #include "regex"
@@ -64,7 +61,7 @@ void Keybinds::read_input() {
                 bunnyhop->check();
             }
             if (ie.code == triggerkey) {
-                holdingKey[triggerkey] = 1;
+                holdingKey[triggerkey] == 0 ? holdingKey[triggerkey] = 1 : holdingKey[triggerkey] = 0;
                 trigger->check();
             }
             if (ie.code == espkey) {
@@ -73,9 +70,6 @@ void Keybinds::read_input() {
         } else if (bytes > 0 && ie.type == EV_KEY && ie.value == 0) {
             if (ie.code == bhopkey) {
                 holdingKey[bhopkey] = 0;
-            }
-            if (ie.code == triggerkey) {
-                holdingKey[triggerkey] = 0;
             }
         }
         if (holdingKey[bhopkey] == 1) {

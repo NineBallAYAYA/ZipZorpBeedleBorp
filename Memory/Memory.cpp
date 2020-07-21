@@ -7,12 +7,9 @@
 #include <regex>
 #include <iostream>
 #include <sys/uio.h>
-#include <iostream>
-#include <iomanip>
 #include <string>
-#include <string.h>
-#include <sys/uio.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cstdlib>
 #include <zconf.h>
 
 //Fairly straightforward
@@ -23,10 +20,10 @@ void Memory::getPid(const std::string& procName) {
     pid = std::stoul(pidStr);
 }
 
-void Memory::getClientModule() {
+addr_Range Memory::getModule(std::string module) {
     //----------------------------------------------------//
     //Get Module Addr
-    std::string cmd = "grep " + clientName + " /proc/" + std::to_string(pid) + "/maps | head -n 1";
+    std::string cmd = "grep " + module + " /proc/" + std::to_string(pid) + "/maps | head -n 1";
     std::string clientAddrUnformated = GetStdoutFromCommand(cmd);
 
     //----------------------------------------------------//
@@ -37,14 +34,12 @@ void Memory::getClientModule() {
     //----------------------------------------------------//
     //Logging...
     if(sm.size() == 0){
-        std::cout << "Failed to load Client module" << std::endl;
+        std::cout << "Failed to load module: " << module << std::endl;
     }
     std::string start = sm[1];
     std::string end = sm[2];
 
-    clientAddr = addr_Range(strtoul(start.c_str(), NULL, 16), strtoul(end.c_str(), NULL, 16));
-    std::cout << clientAddrUnformated << std::endl;
-    std::cout << "Found Client Module: " << start << std::endl;
+    return addr_Range(strtoul(start.c_str(), NULL, 16), strtoul(end.c_str(), NULL, 16));
 }
 
 int Memory::read(void* remoteAddr, void* localAddr, size_t size) {
@@ -105,6 +100,7 @@ addr_type Memory::readEntity(addr_type EntAddress, addr_type ValueOffset, size_t
 
 void Memory::refreshAddr() {
     read((void*) (clientAddr.first + base_player_offset), &base_player_addr, sizeof(base_player_addr));
+    read((void*) (clientAddr.first + dwGlowObjectManager_offset), &dwGlowObjectManager_addr, sizeof(dwGlowObjectManager_addr));
     //Netvars
     flags_addr = base_player_addr + flags_offset;
     InCrossID_addr = base_player_addr + InCrossID_offset;

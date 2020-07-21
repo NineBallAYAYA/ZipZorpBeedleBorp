@@ -11,7 +11,7 @@
 class Memory {
 public:
     void getPid(const std::string&);
-    void getClientModule();
+    addr_Range getModule(std::string module);
     void setAddr();
     void refreshAddr();
     int read(void* targetAddress, void* saveLocation, size_t size);
@@ -23,8 +23,8 @@ public:
 //-----------------------------------------------//
     pid_t pid = 0;
 ///-----------------------------------------------//
-    std::string clientName = "client_client.so";
     addr_Range clientAddr;
+    addr_Range engineAddr;
 ///-----------------------------------------------//
 
 //------------------------------------------------//
