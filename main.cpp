@@ -28,12 +28,9 @@ int main() {
 //------------------------------------------------------------------------------------//
   BunnyHop   bunnyHop(&memory);
   Trigger    trigger(&memory);
-  Keybinds   keyBinds(&bunnyHop, &trigger);
-  //Esp        esp(&memory);
-    keyBinds.init();
+  Esp        esp(&memory);
+  esp.init();
+  Keybinds   keyBinds(&bunnyHop, &trigger, &esp);
 
-
-  while(true){
-      usleep(1000000);
-  }
+  keyBinds.init();
 }

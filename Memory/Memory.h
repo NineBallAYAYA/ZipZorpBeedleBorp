@@ -24,21 +24,22 @@ public:
     std::string clientName = "client_client.so";
     addr_Range clientAddr;
 ///-----------------------------------------------//
-//BHop offsets
-    addr_type force_jump_offset = 0x2a934d0;
-    addr_type base_player_offset = 0x21ea3b0;
-    addr_type flags_offset = 0x13c;
-//------------------------------------------------//
-//ESP Offsets
-    addr_type dwGlowObjectManager_offset = 0x2a83140;
-   // addr_type m_iGlowIndex = 0x0;
-    addr_type m_iTeamNum_offset = 0x12c;
 
 //------------------------------------------------//
-//Trigger
+//NetVar Offsets
+    addr_type flags_offset = 0x13c;
+    addr_type m_iTeamNum_offset = 0x12c;
+    addr_type InCrossID_offset = 0xBCCC + 0x7C;// "m_ihasDefuser + 0x7C"
+    addr_type m_iHealth_offset = 0x138;
+
+//------------------------------------------------//
+//Sig offsets
+    addr_type dwGlowObjectManager_offset = 0x2a88140;
+    addr_type force_jump_offset = 0x2a934d0;
+    addr_type base_player_offset = 0x21ea3b0;
     addr_type dwEntityList_offset = 0x221A808;
     addr_type ForceAttack_offset = 0x2a90c04;
-    addr_type InCrossID_offset = 0xBCCC + 0x7C;
+
 ///-----------------------------------------------//
 //BHop addresses
     addr_type force_jump_addr = NULL;
@@ -46,9 +47,8 @@ public:
     addr_type flags_addr = NULL;
 //------------------------------------------------//
 //ESP addresses
-    addr_type dwGlowObjectManager_addr = NULL;
-    addr_type m_iTeamNum_addr = NULL;
     addr_type dwEntityList_addr = NULL;
+    addr_type dwGlowObjectManager_addr = NULL;
 //------------------------------------------------//
 //Trigger
     addr_type ForceAttack_addr = NULL;

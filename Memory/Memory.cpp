@@ -68,18 +68,16 @@ int Memory::write(void* remoteAddr, void* localAddr, size_t size) {
 
 void Memory::RefreshAddr() {
 //------------------------------------------------//
+//Signature
     read((void*) (clientAddr.first + base_player_offset), &base_player_addr, sizeof(base_player_addr));
+    read((void*) (clientAddr.first + dwGlowObjectManager_offset), &dwGlowObjectManager_addr, sizeof(dwGlowObjectManager_addr));
     force_jump_addr  =  clientAddr.first  +  force_jump_offset;
     ForceAttack_addr = clientAddr.first + ForceAttack_offset;
-    InCrossID_addr = base_player_addr + InCrossID_offset;
-    std::cout << "CrossID: " << InCrossID_addr << std::endl;
-//------------------------------------------------//
-    flags_addr = base_player_addr + flags_offset;
-
-//------------------------------------------------//
-    dwGlowObjectManager_addr = clientAddr.first + dwGlowObjectManager_offset;
     dwEntityList_addr = clientAddr.first + dwEntityList_offset;
-//------------------------------------------------//
+
+//Netvars
+    flags_addr = base_player_addr + flags_offset;
+    InCrossID_addr = base_player_addr + InCrossID_offset;
 }
 
 addr_type Memory::multiLevelPointer(std::vector<addr_type> offsets, size_t size) {

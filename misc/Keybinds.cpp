@@ -46,7 +46,7 @@ void Keybinds::read_input() {
             struct input_event ie;
             int bytes = read(deviceFD[deviceList[i]], &ie, sizeof(ie));
             if (bytes > 0 && ie.type == EV_KEY && ie.value == 1 && (ie.code == bhopkey || ie.code == triggerkey)) {
-                std::cout << "Input Device Found! id:" << i << std::endl;
+                std::cout << "Input Device Found! id: " << i << std::endl;
                 InputDeviceID = i;
                 std::cout << "BHop Key: " << bhopkey << std::endl;
                 std::cout << "Trigger Key: " << triggerkey << std::endl;
@@ -67,6 +67,9 @@ void Keybinds::read_input() {
                 holdingKey[triggerkey] = 1;
                 trigger->check();
             }
+            if (ie.code == espkey) {
+                esp->espOn == 0 ? esp->espOn = 1 : esp->espOn = 0;
+            }
         } else if (bytes > 0 && ie.type == EV_KEY && ie.value == 0) {
             if (ie.code == bhopkey) {
                 holdingKey[bhopkey] = 0;
@@ -75,7 +78,6 @@ void Keybinds::read_input() {
                 holdingKey[triggerkey] = 0;
             }
         }
-
         if (holdingKey[bhopkey] == 1) {
             bunnyhop->check();
         }
@@ -88,7 +90,8 @@ void Keybinds::read_input() {
 }
 
 
-Keybinds::Keybinds(BunnyHop *bunnyHop_, Trigger *trigger_) {
+Keybinds::Keybinds(BunnyHop *bunnyHop_, Trigger *trigger_, Esp* esp_) {
     bunnyhop = bunnyHop_;
     trigger = trigger_;
+    esp = esp_;
 }
