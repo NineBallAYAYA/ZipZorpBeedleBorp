@@ -10,7 +10,7 @@ This was a project mainly meant for learning how computers handle memory and the
 1. update offsets and keybinds
 2. generate makefiles with cmake
 3. make the makefiles
-4. run as root cause of my shitty input system
+4. run as root cause of my bad input system
 
 ## Depedencies
 `sudo apt install xdotool`
